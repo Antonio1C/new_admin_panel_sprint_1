@@ -10,17 +10,18 @@ class GenreFilmworkInLine(admin.TabularInline):
 
 class PersonFilmworkInLine(admin.TabularInline):
     model = PersonFilmwork
-    raw_id_fields = ('person',)
+    autocomplete_fields = ['person']
 
 
 @admin.register(Person)
 class PersonAdmin(admin.ModelAdmin):
-    pass
+    order_fields = ['full_name']
+    search_fields = ['full_name']
 
 
 @admin.register(Genre)
 class GenreAdmin(admin.ModelAdmin):
-    pass
+    search_fields = ['name']
 
 
 @admin.register(Filmwork)
