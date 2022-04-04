@@ -1,7 +1,5 @@
 from django.contrib import admin
-from .models import Genre, Filmwork, GenreFilmwork, Person, PersonFilmwork
-
-# Register your models here.
+from ..models import Filmwork, GenreFilmwork, PersonFilmwork
 
 
 class GenreFilmworkInLine(admin.TabularInline):
@@ -13,22 +11,11 @@ class PersonFilmworkInLine(admin.TabularInline):
     autocomplete_fields = ['person']
 
 
-@admin.register(Person)
-class PersonAdmin(admin.ModelAdmin):
-    order_fields = ['full_name']
-    search_fields = ['full_name']
-
-
-@admin.register(Genre)
-class GenreAdmin(admin.ModelAdmin):
-    search_fields = ['name']
-
-
 @admin.register(Filmwork)
 class FilmworkAdmin(admin.ModelAdmin):
     inlines = (GenreFilmworkInLine, PersonFilmworkInLine)
     # Отображение полей в списке
-    list_display = ('title', 'type', 'creation_date', 'rating',)
+    list_display = ['title', 'type', 'creation_date', 'rating',]
 
     # настройка фильтра
     list_filter = ('type',)

@@ -19,17 +19,20 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False,
                                         primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('modified', models.DateTimeField(auto_now=True)),
+                ('created', models.DateTimeField(auto_now_add=True, null=True)),
+                ('modified', models.DateTimeField(auto_now=True, null=True)),
                 ('title', models.CharField(max_length=255,
                                            verbose_name='title')),
-                ('description', models.TextField(blank=True,
-                                                 verbose_name='description')),
+                ('description', models.TextField(
+                    blank=True,
+                    verbose_name='description',
+                    null=True
+                    )),
                 ('creation_date', models.DateTimeField(auto_now_add=True)),
                 ('rating', models.FloatField(blank=True, validators=[
                     django.core.validators.MinValueValidator(0),
-                    django.core.validators.MaxValueValidator(100)],
-                    verbose_name='rating')),
+                    django.core.validators.MaxValueValidator(10)],
+                    verbose_name='rating', null=True)),
                 ('type', models.CharField(choices=[
                     ('movie', 'Movie'),
                     ('tv_show', 'Tv Show')],
@@ -46,8 +49,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False,
                                         primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('modified', models.DateTimeField(auto_now=True)),
+                ('created', models.DateTimeField(auto_now_add=True, null=True)),
+                ('modified', models.DateTimeField(auto_now=True, null=True)),
                 ('name', models.CharField(max_length=255,
                                           verbose_name='name')),
                 ('description', models.TextField(blank=True,
@@ -64,8 +67,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False,
                                         primary_key=True, serialize=False)),
-                ('created', models.DateTimeField(auto_now_add=True)),
-                ('modified', models.DateTimeField(auto_now=True)),
+                ('created', models.DateTimeField(auto_now_add=True, null=True)),
+                ('modified', models.DateTimeField(auto_now=True, null=True)),
                 ('full_name', models.TextField(verbose_name='full_name')),
             ],
             options={
@@ -83,7 +86,7 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('film_work', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
-                    to='movies.filmwork'
+                    to='movies.filmwork',
                     )),
                 ('person', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
@@ -102,13 +105,25 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('film_work', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
-                    to='movies.filmwork')),
+                    to='movies.filmwork',
+                    verbose_name='Filmwork'
+                    )),
                 ('genre', models.ForeignKey(
                     on_delete=django.db.models.deletion.CASCADE,
-                    to='movies.genre')),
+                    to='movies.genre',
+                    verbose_name='Genre')),
             ],
             options={
                 'db_table': 'content"."genre_film_work',
             },
+        ),
+        migrations.RunSQL(
+            sql='''
+                ALTER TABLE "content"."genre_film_work"
+                ADD CONSTRAINT "genre_film_work_film_work_id_genre_id_uniq"
+                UNIQUE ("film_work_id", "genre_id");
+            ''',
+            reverse_sql='ALTER TABLE "content"."genre_film_work" DROP \
+                CONSTRAINT genre_film_work_film_work_id_genre_id_uniq;'
         ),
     ]

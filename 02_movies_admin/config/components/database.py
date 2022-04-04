@@ -15,7 +15,7 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT', '5432'),
         'OPTIONS': {
             # Нужно явно указать схемы, с которыми будет работать приложение.
-            'options': '-c search_path=content,public'
+            'options': '-c search_path=public'
         }
     }
 }
