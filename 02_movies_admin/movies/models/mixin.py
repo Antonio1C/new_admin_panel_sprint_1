@@ -2,6 +2,7 @@ import uuid
 
 from django.db import models
 
+
 class UUIDMixin(models.Model):
     # Типичная модель в Django использует число в качестве id.
     # В таких ситуациях поле не описывается в модели.
@@ -21,4 +22,3 @@ class TimeStampedMixin(models.Model):
 
     class Meta:
         abstract = True
-

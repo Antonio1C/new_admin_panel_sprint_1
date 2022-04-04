@@ -23,8 +23,6 @@ class Filmwork(UUIDMixin, TimeStampedMixin):
                             default=Types.MOVIE,
                             max_length=7)
 
-    # file_path = models.FileField(_('file'), blank=True, null=True, upload_to='movies/')
-
     genres = models.ManyToManyField(Genre, through='GenreFilmwork')
     persons = models.ManyToManyField(Person, through='PersonFilmwork')
 
@@ -37,4 +35,3 @@ class Filmwork(UUIDMixin, TimeStampedMixin):
 
     def __str__(self) -> str:
         return self.title
-

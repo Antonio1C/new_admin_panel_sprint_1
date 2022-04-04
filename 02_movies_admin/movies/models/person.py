@@ -3,6 +3,7 @@ from .mixin import UUIDMixin, TimeStampedMixin
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+
 class Person(UUIDMixin, TimeStampedMixin):
 
     full_name = models.TextField(_('full_name'))
