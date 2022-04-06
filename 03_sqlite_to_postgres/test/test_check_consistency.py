@@ -23,8 +23,11 @@ def table_row_count(conn: _connection | Connection, table_name: str) -> int:
     cur = conn.cursor()
     sql_query = f'SELECT COUNT(*) as count FROM {table_name};'
     cur.execute(sql_query)
+
     result = cur.fetchone()
-    if result == None: return 0
+    if result is None:
+        return 0
+
     return result[0]
 
 
@@ -41,7 +44,7 @@ def test_integrity():
 
     sqlite_path = os.environ.get('DB_SQLITE_PATH')
     with sqlite_context(sqlite_path) as sqlite_conn,\
-        psycopg2.connect(**dsl, cursor_factory=DictCursor) as pg_conn:
+            psycopg2.connect(**dsl, cursor_factory=DictCursor) as pg_conn:
 
         for table_name in TABLE_TYPES:
             pg_count = table_row_count(pg_conn, f'content.{table_name}')
@@ -65,7 +68,9 @@ def check_records(
     pg_cur.execute(pg_query)
 
     format_str = "%Y-%m-%d %H:%M:%S.%f%z"
-    for sqlite_row, pg_row in zip(sqlite_cur.execute(sqlite_query), pg_cur.fetchall()):
+
+    matching_values = zip(sqlite_cur.execute(sqlite_query), pg_cur.fetchall())
+    for sqlite_row, pg_row in matching_values:
         for fld in t_fields:
             pg_fld = FIELD_MATCHING.get(fld, fld)
             sqlite_value = sqlite_row[fld]
@@ -79,10 +84,10 @@ def check_records(
             if sqlite_value != pg_value:
                 print(sqlite_value, pg_value)
                 return False
-    
+
     return True
 
-    
+
 def test_consistency():
 
     load_dotenv()
@@ -97,7 +102,7 @@ def test_consistency():
 
     sqlite_path = os.environ.get('DB_SQLITE_PATH')
     with sqlite_context(sqlite_path) as sqlite_conn,\
-        psycopg2.connect(**dsl, cursor_factory=DictCursor) as pg_conn:
+            psycopg2.connect(**dsl, cursor_factory=DictCursor) as pg_conn:
 
         for table_name in TABLE_TYPES:
             assert check_records(sqlite_conn, pg_conn, table_name)
