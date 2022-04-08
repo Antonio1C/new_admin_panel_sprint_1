@@ -3,10 +3,6 @@ from dataclasses import dataclass, field, fields
 from datetime import datetime
 
 
-def get_fields(data_type: type):
-    return [fld.name for fld in fields(data_type)]
-
-
 @dataclass
 class Filmwork():
     title: str
@@ -66,3 +62,25 @@ FIELD_MATCHING = {
     'created_at': 'created',
     'updated_at': 'modified',
 }
+
+
+def get_fields(data_type: type) -> list:
+    return [fld.name for fld in fields(data_type)]
+
+
+def get_fields_types(data_type: type) -> str:
+    types = []
+    for fld in fields(data_type):
+        if fld.type is str:
+            types.append('text')
+        if fld.type is uuid.UUID:
+            types.append('uuid')
+        if fld.type is datetime:
+            if fld.name == 'creation_date':
+                types.append('date')
+            else:
+                types.append('timestamp with time zone')
+        if fld.type is float:
+            types.append('double precision')
+
+    return types

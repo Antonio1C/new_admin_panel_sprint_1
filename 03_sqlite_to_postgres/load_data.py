@@ -15,8 +15,19 @@ from contextlib import contextmanager
 def sqlite_context(db_path: str):
     conn = sqlite3.connect(db_path)
     conn.row_factory = sqlite3.Row
-    yield conn
-    conn.close()
+    try:
+        yield conn
+    finally:
+        conn.close()
+
+
+@contextmanager
+def pg_context(**dsl):
+    conn = psycopg2.connect(**dsl, cursor_factory=DictCursor)
+    try:
+        yield conn
+    finally:
+        conn.close()
 
 
 def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection):
@@ -24,8 +35,9 @@ def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection):
     postgres_saver = PostgresSaver(pg_conn)
     sqlite_loader = SQLiteLoader(connection)
 
-    data = sqlite_loader.load_movies_database()
-    postgres_saver.save_all_data(data)
+    for table_name, data in sqlite_loader.load_movies_database(pack_size=200):
+        if data:
+            postgres_saver.save_data(table_name, data)
 
 
 if __name__ == '__main__':
@@ -42,6 +54,6 @@ if __name__ == '__main__':
 
     sqlite_path = os.environ.get('DB_SQLITE_PATH')
     with sqlite_context(sqlite_path) as sqlite_conn,\
-            psycopg2.connect(**dsl, cursor_factory=DictCursor) as pg_conn:
+            pg_context(**dsl) as pg_conn:
 
         load_from_sqlite(sqlite_conn, pg_conn)
