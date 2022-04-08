@@ -117,13 +117,33 @@ class Migration(migrations.Migration):
                 'db_table': 'content"."genre_film_work',
             },
         ),
-        migrations.RunSQL(
-            sql='''
-                ALTER TABLE "content"."genre_film_work"
-                ADD CONSTRAINT "genre_film_work_film_work_id_genre_id_uniq"
-                UNIQUE ("film_work_id", "genre_id");
-            ''',
-            reverse_sql='ALTER TABLE "content"."genre_film_work" DROP \
-                CONSTRAINT genre_film_work_film_work_id_genre_id_uniq;'
+        migrations.AddIndex(
+            model_name='filmwork',
+            index=models.Index(
+                fields=['creation_date', 'rating'],
+                name='fw_creation_date_rating_idx'
+            ),
+        ),
+        migrations.AddIndex(
+            model_name='filmwork',
+            index=models.Index(fields=['rating'], name='fw_rating_idx'),
+        ),
+        migrations.AddIndex(
+            model_name='filmwork',
+            index=models.Index(fields=['title'], name='fw_title_idx'),
+        ),
+        migrations.AddIndex(
+            model_name='personfilmwork',
+            index=models.Index(
+                fields=['film_work_id', 'person_id'],
+                name='film_work_person_idx'
+            ),
+        ),
+        migrations.AddConstraint(
+            model_name='genrefilmwork',
+            constraint=models.UniqueConstraint(
+                fields=('film_work_id', 'genre_id'),
+                name='genre_film_work_film_work_id_genre_id_uniq'
+            ),
         ),
     ]

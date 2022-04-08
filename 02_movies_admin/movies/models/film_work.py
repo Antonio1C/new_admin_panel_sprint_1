@@ -15,7 +15,7 @@ class Filmwork(UUIDMixin, TimeStampedMixin):
 
     title = models.CharField(_('title'), max_length=255)
     description = models.TextField(_('description'), blank=True, null=True)
-    creation_date = models.DateTimeField(auto_now_add=True)
+    creation_date = models.DateTimeField(_('creation_date'), auto_now_add=True)
     rating = models.FloatField(_('rating'), blank=True,
                                validators=[MinValueValidator(0),
                                            MaxValueValidator(10)], null=True)
@@ -35,6 +35,14 @@ class Filmwork(UUIDMixin, TimeStampedMixin):
         # Следующие два поля отвечают за название модели в интерфейсе
         verbose_name = _('filmwork')
         verbose_name_plural = _('filmworks')
+        indexes = [
+            models.Index(
+                fields=['creation_date', 'rating'],
+                name='fw_creation_date_rating_idx'
+            ),
+            models.Index(fields=['rating'], name='fw_rating_idx'),
+            models.Index(fields=['title'], name='fw_title_idx'),
+        ]
 
     def __str__(self) -> str:
         return self.title

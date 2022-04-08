@@ -19,3 +19,9 @@ class GenreFilmwork(UUIDMixin):
         db_table = 'content"."genre_film_work'
         verbose_name = _('Genres of filmwork')
         verbose_name_plural = _('Genres of filmwork')
+        constraints = [
+            models.UniqueConstraint(
+                fields=['film_work_id', 'genre_id'],
+                name='genre_film_work_film_work_id_genre_id_uniq'
+            )
+        ]

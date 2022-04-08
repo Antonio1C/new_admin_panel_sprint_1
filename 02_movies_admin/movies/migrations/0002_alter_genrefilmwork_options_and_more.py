@@ -13,50 +13,64 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AlterModelOptions(
             name='genrefilmwork',
-            options={'verbose_name': 'Genres of filmwork', 'verbose_name_plural': 'Genres of filmwork'},
+            options={
+                'verbose_name': 'Genres of filmwork',
+                'verbose_name_plural': 'Genres of filmwork'
+            },
         ),
         migrations.AlterModelOptions(
             name='personfilmwork',
-            options={'verbose_name': 'Persons of filmwork', 'verbose_name_plural': 'Persons of filmwork'},
+            options={
+                'verbose_name': 'Persons of filmwork',
+                'verbose_name_plural': 'Persons of filmwork'
+            },
         ),
         migrations.AddField(
             model_name='filmwork',
             name='file_path',
-            field=models.FileField(blank=True, null=True, upload_to='movies/', verbose_name='file'),
+            field=models.FileField(blank=True, null=True, upload_to='movies/',
+                                   verbose_name='file'),
         ),
         migrations.AddField(
             model_name='filmwork',
             name='genres',
-            field=models.ManyToManyField(through='movies.GenreFilmwork', to='movies.genre'),
+            field=models.ManyToManyField(through='movies.GenreFilmwork',
+                                         to='movies.genre'),
         ),
         migrations.AddField(
             model_name='filmwork',
             name='persons',
-            field=models.ManyToManyField(through='movies.PersonFilmwork', to='movies.person'),
+            field=models.ManyToManyField(through='movies.PersonFilmwork',
+                                         to='movies.person'),
         ),
         migrations.AlterField(
             model_name='filmwork',
             name='type',
-            field=models.CharField(choices=[('фильм', 'Movie'), ('тв шоу', 'Tv Show')], default='фильм', max_length=7, verbose_name='type'),
+            field=models.CharField(choices=[('фильм', 'Movie'), ('тв шоу', 'Tv Show')],
+                                   default='фильм', max_length=7, verbose_name='type'),
         ),
         migrations.AlterField(
             model_name='genrefilmwork',
             name='film_work',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='movies.filmwork', verbose_name='filmwork'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                    to='movies.filmwork', verbose_name='filmwork'),
         ),
         migrations.AlterField(
             model_name='genrefilmwork',
             name='genre',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='movies.genre', verbose_name='genre'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                    to='movies.genre', verbose_name='genre'),
         ),
         migrations.AlterField(
             model_name='personfilmwork',
             name='film_work',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='movies.filmwork', verbose_name='filmwork'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                    to='movies.filmwork', verbose_name='filmwork'),
         ),
         migrations.AlterField(
             model_name='personfilmwork',
             name='person',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='movies.person', verbose_name='person'),
+            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                    to='movies.person', verbose_name='person'),
         ),
     ]
