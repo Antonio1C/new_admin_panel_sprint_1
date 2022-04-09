@@ -1,3 +1,4 @@
+from typing import Tuple
 import db_dataobjects
 
 from sqlite3 import Connection
@@ -8,7 +9,11 @@ class SQLiteLoader:
     def __init__(self, conn: Connection) -> None:
         self.conn = conn
 
-    def load_movies_database(self, tables: list = [], pack_size: int = 500) -> dict:
+    def load_movies_database(
+        self,
+        tables: list = [],
+        pack_size: int = 500
+    ) -> Tuple[str, list]:
 
         if tables == []:
             tables = self.get_all_table_names()
@@ -25,7 +30,7 @@ class SQLiteLoader:
 
         return tables_list
 
-    def load_table(self, table_name: str, pack_size: int) -> dict:
+    def load_table(self, table_name: str, pack_size: int) -> Tuple[str, list]:
         DataClass = db_dataobjects.TABLE_TYPES[table_name]
 
         cur = self.conn.cursor()

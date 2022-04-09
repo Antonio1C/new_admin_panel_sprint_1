@@ -30,12 +30,12 @@ def pg_context(**dsl):
         conn.close()
 
 
-def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection):
+def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection) -> None:
     """Основной метод загрузки данных из SQLite в Postgres"""
     postgres_saver = PostgresSaver(pg_conn)
     sqlite_loader = SQLiteLoader(connection)
 
-    pack_size =int(os.environ.get('PACK_SIZE'))
+    pack_size = int(os.environ.get('PACK_SIZE'))
     for table_name, data in sqlite_loader.load_movies_database(pack_size=pack_size):
         if data:
             postgres_saver.save_data(table_name, data)
