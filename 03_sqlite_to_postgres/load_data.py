@@ -35,7 +35,8 @@ def load_from_sqlite(connection: sqlite3.Connection, pg_conn: _connection):
     postgres_saver = PostgresSaver(pg_conn)
     sqlite_loader = SQLiteLoader(connection)
 
-    for table_name, data in sqlite_loader.load_movies_database(pack_size=200):
+    pack_size =int(os.environ.get('PACK_SIZE'))
+    for table_name, data in sqlite_loader.load_movies_database(pack_size=pack_size):
         if data:
             postgres_saver.save_data(table_name, data)
 
