@@ -15,8 +15,19 @@ from db_dataobjects import TABLE_TYPES, FIELD_MATCHING, get_fields
 def sqlite_context(db_path: str):
     conn = sqlite_connect(db_path)
     conn.row_factory = Row
-    yield conn
-    conn.close()
+    try:
+        yield conn
+    finally:
+        conn.close()
+
+
+@contextmanager
+def pg_context(**dsl):
+    conn = psycopg2.connect(**dsl, cursor_factory=DictCursor)
+    try:
+        yield conn
+    finally:
+        conn.close()
 
 
 def table_row_count(conn: _connection | Connection, table_name: str) -> int:
@@ -44,7 +55,7 @@ def test_integrity():
 
     sqlite_path = os.environ.get('DB_SQLITE_PATH')
     with sqlite_context(sqlite_path) as sqlite_conn,\
-            psycopg2.connect(**dsl, cursor_factory=DictCursor) as pg_conn:
+            pg_context(**dsl) as pg_conn:
 
         for table_name in TABLE_TYPES:
             pg_count = table_row_count(pg_conn, f'content.{table_name}')
@@ -102,7 +113,7 @@ def test_consistency():
 
     sqlite_path = os.environ.get('DB_SQLITE_PATH')
     with sqlite_context(sqlite_path) as sqlite_conn,\
-            psycopg2.connect(**dsl, cursor_factory=DictCursor) as pg_conn:
+            pg_context(**dsl) as pg_conn:
 
         for table_name in TABLE_TYPES:
             assert check_records(sqlite_conn, pg_conn, table_name)
