@@ -21,7 +21,7 @@ load_dotenv()
 include(
     'components/database.py',
     'components/appdefines.py',
-    # 'components/logging.py',
+    'components/logging.py',
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
